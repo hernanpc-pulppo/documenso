@@ -19,7 +19,7 @@
     --card-foreground: 222.2 47.4% 11.2%;
 
     --field-card: 95 74% 90%;
-    --field-card-border: 95.08 71.08% 67.45%;
+    --field-card-border: 46 100% 48%;
     --field-card-foreground: 222.2 47.4% 11.2%;
 
     --widget: 0 0% 97%;
@@ -27,7 +27,7 @@
     --border: 214.3 31.8% 91.4%;
     --input: 214.3 31.8% 91.4%;
 
-    --primary: 95.08 71.08% 67.45%;
+    --primary: 46 100% 48%;
     --primary-foreground: 95.08 71.08% 10%;
 
     --secondary: 210 40% 96.1%;
@@ -39,7 +39,7 @@
     --destructive: 0 100% 50%;
     --destructive-foreground: 210 40% 98%;
 
-    --ring: 95.08 71.08% 67.45%;
+    --ring: 46 100% 48%;
 
     --radius: 0.5rem;
 
@@ -158,19 +158,19 @@
     --border: 0 0% 27.9%;
     --input: 0 0% 27.9%;
 
-    --primary: 95.08 71.08% 67.45%;
+    --primary: 46 100% 48%;
     --primary-foreground: 95.08 71.08% 10%;
 
     --secondary: 0 0% 23.4%;
-    --secondary-foreground: 95.08 71.08% 67.45%;
+    --secondary-foreground: 46 100% 48%;
 
     --accent: 0 0% 27.9%;
-    --accent-foreground: 95.08 71.08% 67.45%;
+    --accent-foreground: 46 100% 48%;
 
     --destructive: 0 87% 62%;
     --destructive-foreground: 0 87% 19%;
 
-    --ring: 95.08 71.08% 67.45%;
+    --ring: 46 100% 48%;
 
     --radius: 0.5rem;
 

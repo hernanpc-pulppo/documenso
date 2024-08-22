@@ -2,10 +2,10 @@ import { RecipientRole } from '@documenso/prisma/client';
 
 export const RECIPIENT_ROLES_DESCRIPTION = {
   [RecipientRole.APPROVER]: {
-    actionVerb: 'Approve',
-    actioned: 'Approved',
-    progressiveVerb: 'Approving',
-    roleName: 'Approver',
+    actionVerb: 'Aprobar',
+    actioned: 'Aprobado',
+    progressiveVerb: 'Aprobando',
+    roleName: 'Aprobador',
   },
   [RecipientRole.CC]: {
     actionVerb: 'CC',
@@ -14,16 +14,16 @@ export const RECIPIENT_ROLES_DESCRIPTION = {
     roleName: 'Cc',
   },
   [RecipientRole.SIGNER]: {
-    actionVerb: 'Sign',
-    actioned: 'Signed',
-    progressiveVerb: 'Signing',
-    roleName: 'Signer',
+    actionVerb: 'Firmar',
+    actioned: 'Firmado',
+    progressiveVerb: 'Firmando',
+    roleName: 'Firmante',
   },
   [RecipientRole.VIEWER]: {
-    actionVerb: 'View',
-    actioned: 'Viewed',
-    progressiveVerb: 'Viewing',
-    roleName: 'Viewer',
+    actionVerb: 'Ver',
+    actioned: 'Visto',
+    progressiveVerb: 'Viedo',
+    roleName: 'Veedor',
   },
 } satisfies Record<keyof typeof RecipientRole, unknown>;
 

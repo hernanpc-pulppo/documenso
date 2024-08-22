@@ -71,7 +71,7 @@ export const DocumentInviteEmailTemplate = ({
               <Section>
                 <Img
                   src={getAssetUrl('/static/logo.png')}
-                  alt="Documenso Logo"
+                  alt="Pulppo Logo"
                   className="mb-4 h-6"
                 />
 
@@ -102,7 +102,7 @@ export const DocumentInviteEmailTemplate = ({
                   {customBody ? (
                     <pre className="font-sans text-base text-slate-400">{customBody}</pre>
                   ) : (
-                    `${inviterName} has invited you to ${action} the document "${documentName}".`
+                    `${inviterName} te ha invitado a ${action} el documento "${documentName}".`
                   )}
                 </Text>
               </Section>
