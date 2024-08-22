@@ -103,7 +103,7 @@ export const SigningForm = ({ document, recipient, fields, redirectUrl }: Signin
     >
       {validateUninsertedFields && uninsertedFields[0] && (
         <FieldToolTip key={uninsertedFields[0].id} field={uninsertedFields[0]} color="warning">
-          Click to insert field
+          Click para insertar 
         </FieldToolTip>
       )}
 
@@ -115,15 +115,15 @@ export const SigningForm = ({ document, recipient, fields, redirectUrl }: Signin
       >
         <div className={cn('flex flex-1 flex-col')}>
           <h3 className="text-foreground text-2xl font-semibold">
-            {recipient.role === RecipientRole.VIEWER && 'View Document'}
-            {recipient.role === RecipientRole.SIGNER && 'Sign Document'}
-            {recipient.role === RecipientRole.APPROVER && 'Approve Document'}
+            {recipient.role === RecipientRole.VIEWER && 'Ver Documento'}
+            {recipient.role === RecipientRole.SIGNER && 'Firmar Documento'}
+            {recipient.role === RecipientRole.APPROVER && 'Aprobar Documento'}
           </h3>
 
           {recipient.role === RecipientRole.VIEWER ? (
             <>
               <p className="text-muted-foreground mt-2 text-sm">
-                Please mark as viewed to complete
+                Por favor, marcalo como visto
               </p>
 
               <hr className="border-border mb-8 mt-4" />
@@ -139,7 +139,7 @@ export const SigningForm = ({ document, recipient, fields, redirectUrl }: Signin
                     disabled={typeof window !== 'undefined' && window.history.length <= 1}
                     onClick={() => router.back()}
                   >
-                    Cancel
+                    Cancelar
                   </Button>
 
                   <SignDialog
@@ -156,7 +156,7 @@ export const SigningForm = ({ document, recipient, fields, redirectUrl }: Signin
           ) : (
             <>
               <p className="text-muted-foreground mt-2 text-sm">
-                Please review the document before signing.
+               Por favor, revisa el documento antes de firmarlo.
               </p>
 
               <hr className="border-border mb-8 mt-4" />
@@ -164,7 +164,7 @@ export const SigningForm = ({ document, recipient, fields, redirectUrl }: Signin
               <div className="-mx-2 flex flex-1 flex-col gap-4 overflow-y-auto px-2">
                 <div className="flex flex-1 flex-col gap-y-4">
                   <div>
-                    <Label htmlFor="full-name">Full Name</Label>
+                    <Label htmlFor="full-name">Nombre completo</Label>
 
                     <Input
                       type="text"
@@ -176,7 +176,7 @@ export const SigningForm = ({ document, recipient, fields, redirectUrl }: Signin
                   </div>
 
                   <div>
-                    <Label htmlFor="Signature">Signature</Label>
+                    <Label htmlFor="Signature">Firma</Label>
 
                     <Card className="mt-2" gradient degrees={-120}>
                       <CardContent className="p-0">

@@ -101,16 +101,16 @@ export const resendDocument = async ({
       const recipientActionVerb = actionVerb.toLowerCase();
 
       let emailMessage = customEmail?.message || '';
-      let emailSubject = `Reminder: Please ${recipientActionVerb} this document`;
+      let emailSubject = `Recordatorio: Por favor ${recipientActionVerb} este documento`;
 
       if (selfSigner) {
         emailMessage = `You have initiated the document ${`"${document.title}"`} that requires you to ${recipientActionVerb} it.`;
-        emailSubject = `Reminder: Please ${recipientActionVerb} your document`;
+        emailSubject = `Recordatorio: Por favor ${recipientActionVerb} tu documento`;
       }
 
       if (isTeamDocument && document.team) {
-        emailSubject = `Reminder: ${document.team.name} invited you to ${recipientActionVerb} a document`;
-        emailMessage = `${user.name} on behalf of ${document.team.name} has invited you to ${recipientActionVerb} the document "${document.title}".`;
+        emailSubject = `Recordatorio: ${document.team.name} te ha invitado a ${recipientActionVerb} un documento`;
+        emailMessage = `${user.name} en representación de ${document.team.name} te ha invitado a ${recipientActionVerb} el documento "${document.title}".`;
       }
 
       const customEmailTemplate = {

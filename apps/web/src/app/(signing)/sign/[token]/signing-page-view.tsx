@@ -63,10 +63,10 @@ export const SigningPageView = ({
         </p>
       </div>
       <p className="text-muted-foreground">
-        ({document.User.email}) has invited you to{' '}
-        {recipient.role === RecipientRole.VIEWER && 'view'}
-        {recipient.role === RecipientRole.SIGNER && 'sign'}
-        {recipient.role === RecipientRole.APPROVER && 'approve'} this document.
+        ({document.User.email}) te ha invitado a{' '}
+        {recipient.role === RecipientRole.VIEWER && 'ver'}
+        {recipient.role === RecipientRole.SIGNER && 'firmar'}
+        {recipient.role === RecipientRole.APPROVER && 'aprobar'} este documento.
       </p>
 
       <div className="mt-8 grid grid-cols-12 gap-y-8 lg:gap-x-8 lg:gap-y-0">

@@ -172,7 +172,7 @@ export const DocumentPageView = async ({ params, team }: DocumentPageViewProps) 
             <section className="border-border bg-widget flex flex-col rounded-xl border pb-4 pt-6">
               <div className="flex flex-row items-center justify-between px-4">
                 <h3 className="text-foreground text-2xl font-semibold">
-                  Document {FRIENDLY_STATUS_MAP[document.status].label.toLowerCase()}
+                  Documento {FRIENDLY_STATUS_MAP[document.status].label.toLowerCase()}
                 </h3>
 
                 <DocumentPageViewDropdown document={documentWithRecipients} team={team} />

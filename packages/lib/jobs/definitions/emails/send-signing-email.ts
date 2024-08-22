@@ -91,11 +91,11 @@ export const SEND_SIGNING_EMAIL_JOB_DEFINITION = {
     const recipientActionVerb = actionVerb.toLowerCase();
 
     let emailMessage = customEmail?.message || '';
-    let emailSubject = `Please ${recipientActionVerb} this document`;
+    let emailSubject = `Por favor ${recipientActionVerb} este documento`;
 
     if (selfSigner) {
       emailMessage = `You have initiated the document ${`"${document.title}"`} that requires you to ${recipientActionVerb} it.`;
-      emailSubject = `Please ${recipientActionVerb} your document`;
+      emailSubject = `Por favor ${recipientActionVerb} tu documento`;
     }
 
     if (isDirectTemplate) {
@@ -104,8 +104,8 @@ export const SEND_SIGNING_EMAIL_JOB_DEFINITION = {
     }
 
     if (isTeamDocument && team) {
-      emailSubject = `${team.name} invited you to ${recipientActionVerb} a document`;
-      emailMessage = `${user.name} on behalf of ${team.name} has invited you to ${recipientActionVerb} the document "${document.title}".`;
+      emailSubject = `${team.name} te ha invitado a ${recipientActionVerb} un documento`;
+      emailMessage = `${user.name} en representación de ${team.name} te ha invitado a ${recipientActionVerb} el documento "${document.title}".`;
     }
 
     const customEmailTemplate = {
