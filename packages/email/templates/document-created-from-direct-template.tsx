@@ -67,7 +67,7 @@ export const DocumentCreatedFromDirectTemplateEmailTemplate = ({
 
                 <Section>
                   <Text className="text-primary mb-0 text-center text-lg font-semibold">
-                    {recipientName} {action} a document by using one of your direct links
+                    {recipientName} {action} un documento con uno de nuestas ligas directas.
                   </Text>
 
                   <div className="mx-auto my-2 w-fit rounded-lg bg-gray-50 px-4 py-2 text-sm text-slate-600">
@@ -79,7 +79,7 @@ export const DocumentCreatedFromDirectTemplateEmailTemplate = ({
                       className="bg-documenso-500 inline-flex items-center justify-center rounded-lg px-6 py-3 text-center text-sm font-medium text-black no-underline"
                       href={documentLink}
                     >
-                      View document
+                      Ver documento
                     </Button>
                   </Section>
                 </Section>

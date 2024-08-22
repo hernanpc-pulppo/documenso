@@ -18,20 +18,20 @@ export const TemplateDocumentDelete = ({
 
       <Section>
         <Text className="text-primary mb-0 mt-6 text-left text-lg font-semibold">
-          Your document has been deleted by an admin!
+          ¡Tu documento ha sido eliminado por un administrador!
         </Text>
 
         <Text className="mx-auto mb-6 mt-1 text-left text-base text-slate-400">
-          "{documentName}" has been deleted by an admin.
+          "{documentName}" ha sido eliminado por un administrador.
         </Text>
 
         <Text className="mx-auto mb-6 mt-1 text-left text-base text-slate-400">
-          This document can not be recovered, if you would like to dispute the reason for future
-          documents please contact support.
+          Este documento no se puede recuperar. Si deseas disputar la razón para futuros documentos,
+          por favor contacta al soporte.
         </Text>
 
         <Text className="mx-auto mt-1 text-left text-base text-slate-400">
-          The reason provided for deletion is the following:
+          La razón proporcionada para la eliminación es la siguiente:
         </Text>
 
         <Text className="mx-auto mb-6 mt-1 text-left text-base italic text-slate-400">

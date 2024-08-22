@@ -10,7 +10,7 @@ export const TemplateFooter = ({ isDocument = true }: TemplateFooterProps) => {
       {isDocument && (
         <Text className="my-4 text-base text-slate-400">
           Este documento fue enviado por{' '}
-          <Link className="text-[#7AC455]" href="https://documen.so/mail-footer">
+          <Link className="text-[#F6BE00]" href="https://pulppo.com">
             Pulppo.
           </Link>
         </Text>

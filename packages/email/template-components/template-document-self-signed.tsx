@@ -27,30 +27,30 @@ export const TemplateDocumentSelfSigned = ({
       <Section className="flex-row items-center justify-center">
         <Section>
           <Column align="center">
-            <Text className="text-base font-semibold text-[#7AC455]">
+            <Text className="text-base font-semibold text-[#F6BE00]">
               <Img
                 src={getAssetUrl('/static/completed.png')}
                 className="-mt-0.5 mr-2 inline h-7 w-7 align-middle"
               />
-              Completed
+              Completado
             </Text>
           </Column>
         </Section>
 
         <Text className="text-primary mb-0 mt-6 text-center text-lg font-semibold">
-          You have signed “{documentName}”
+          Has firmado “{documentName}”
         </Text>
 
         <Text className="mx-auto mb-6 mt-1 max-w-[80%] text-center text-base text-slate-400">
-          Create a{' '}
+          Crea una{' '}
           <Link
             href={signUpUrl}
             target="_blank"
             className="text-documenso-700 hover:text-documenso-600 whitespace-nowrap"
           >
-            free account
+            cuenta gratuita
           </Link>{' '}
-          to access your signed documents at any time.
+          para acceder a tus documentos firmados en cualquier momento.
         </Text>
 
         <Section className="mb-6 mt-8 text-center">
@@ -62,7 +62,7 @@ export const TemplateDocumentSelfSigned = ({
               src={getAssetUrl('/static/user-plus.png')}
               className="mb-0.5 mr-2 inline h-5 w-5 align-middle"
             />
-            Create account
+            Crear cuenta
           </Button>
 
           <Button
@@ -73,7 +73,7 @@ export const TemplateDocumentSelfSigned = ({
               src={getAssetUrl('/static/review.png')}
               className="mb-0.5 mr-2 inline h-5 w-5 align-middle"
             />
-            View plans
+            Ver planes
           </Button>
         </Section>
       </Section>

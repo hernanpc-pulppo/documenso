@@ -54,7 +54,7 @@ export const TemplatePageView = async ({ params, team }: TemplatePageViewProps) 
     <div className="mx-auto -mt-4 max-w-screen-xl px-4 md:px-8">
       <div className="flex flex-col justify-between sm:flex-row">
         <div>
-          <Link href="/templates" className="flex items-center text-[#7AC455] hover:opacity-80">
+          <Link href="/templates" className="flex items-center text-[#F6BE00] hover:opacity-80">
             <ChevronLeft className="mr-2 inline-block h-5 w-5" />
             Templates
           </Link>
