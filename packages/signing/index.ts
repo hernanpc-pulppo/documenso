@@ -14,6 +14,7 @@ export const signPdf = async ({ pdf }: SignOptions) => {
     .with('local', async () => signWithLocalCert({ pdf }))
     .with('gcloud-hsm', async () => signWithGoogleCloudHSM({ pdf }))
     .otherwise(() => {
+      console.error(`Unsupported signing transport: ${transport}`);
       throw new Error(`Unsupported signing transport: ${transport}`);
     });
 };

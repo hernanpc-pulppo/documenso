@@ -10,9 +10,15 @@ export type SignWithLocalCertOptions = {
 };
 
 export const signWithLocalCert = async ({ pdf }: SignWithLocalCertOptions) => {
+  console.log('Signing with local cert');
+  const newPdf = await addSigningPlaceholder({ pdf });
+
+  console.log('Added placeholder');
   const { pdf: pdfWithPlaceholder, byteRange } = updateSigningPlaceholder({
-    pdf: await addSigningPlaceholder({ pdf }),
+    pdf: newPdf,
   });
+
+  console.log('Updated placeholder');
 
   const pdfWithoutSignature = Buffer.concat([
     pdfWithPlaceholder.subarray(0, byteRange[1]),
@@ -24,10 +30,12 @@ export const signWithLocalCert = async ({ pdf }: SignWithLocalCertOptions) => {
   let cert: Buffer | null = null;
 
   if (process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS) {
+    console.log('Using local cert');
     cert = Buffer.from(process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS, 'base64');
   }
 
   if (!cert) {
+    console.log('Using default cert');
     cert = Buffer.from(
       fs.readFileSync(process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH || './example/cert.p12'),
     );
@@ -38,6 +46,8 @@ export const signWithLocalCert = async ({ pdf }: SignWithLocalCertOptions) => {
     content: pdfWithoutSignature,
     password: process.env.NEXT_PRIVATE_SIGNING_PASSPHRASE || undefined,
   });
+
+  console.log('Signed with p12');
 
   const signatureAsHex = signature.toString('hex');
 

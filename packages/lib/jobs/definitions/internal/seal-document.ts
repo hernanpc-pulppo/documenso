@@ -46,238 +46,237 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
   },
   handler: async ({ payload, io }) => {
     try {
-
-    const { documentId, sendEmail = true, isResealing = false, requestMetadata } = payload;
-      console.log('Running job')
-    const document = await prisma.document.findFirstOrThrow({
-      where: {
-        id: documentId,
-        Recipient: {
-          every: {
-            signingStatus: SigningStatus.SIGNED,
+      const { documentId, sendEmail = true, isResealing = false, requestMetadata } = payload;
+      console.log('Running job');
+      const document = await prisma.document.findFirstOrThrow({
+        where: {
+          id: documentId,
+          Recipient: {
+            every: {
+              signingStatus: SigningStatus.SIGNED,
+            },
           },
         },
-      },
-      include: {
-        Recipient: true,
-      },
-    });
-    console.log('Got document')
-    // Seems silly but we need to do this in case the job is re-ran
-    // after it has already run through the update task further below.
-    // eslint-disable-next-line @typescript-eslint/require-await
-    const documentStatus = await io.runTask('get-document-status', async () => {
-      return document.status;
-    });
-
-      console.log('Got document status')
-    // This is the same case as above.
-    // eslint-disable-next-line @typescript-eslint/require-await
-    const documentDataId = await io.runTask('get-document-data-id', async () => {
-      return document.documentDataId;
-    });
-
-      console.log('Got document data id')
-    const documentData = await prisma.documentData.findFirst({
-      where: {
-        id: documentDataId,
-      },
-    });
-      console.log('Got document data')
-
-    if (!documentData) {
-      console.log('No document data')
-      throw new Error(`Document ${document.id} has no document data`);
-    }
-
-    const recipients = await prisma.recipient.findMany({
-      where: {
-        documentId: document.id,
-        role: {
-          not: RecipientRole.CC,
+        include: {
+          Recipient: true,
         },
-      },
-    });
-      console.log('Got recipients')
-
-    if (recipients.some((recipient) => recipient.signingStatus !== SigningStatus.SIGNED)) {
-      console.log('Some recipients not signed')
-      throw new Error(`Document ${document.id} has unsigned recipients`);
-    }
-
-    const fields = await prisma.field.findMany({
-      where: {
-        documentId: document.id,
-      },
-      include: {
-        Signature: true,
-      },
-    });
-      console.log('Got fields')
-
-    if (fields.some((field) => !field.inserted)) {
-      console.log('Some fields not inserted')
-      throw new Error(`Document ${document.id} has unsigned fields`);
-    }
-
-    if (isResealing) {
-      // If we're resealing we want to use the initial data for the document
-      // so we aren't placing fields on top of eachother.
-      documentData.data = documentData.initialData;
-    }
-
-      const pdfData = await getFile(documentData);
-      console.log('Got pdf data')
-    const certificateData = await getCertificatePdf({ documentId }).catch(() => null);
-      console.log('Got certificate data')
-
-    const newDataId = await io.runTask('decorate-and-sign-pdf', async () => {
-      console.log('Decorating and signing PDF')
-      const pdfDoc = await PDFDocument.load(pdfData);
-      console.log('Got pdf doc')
-
-      // Normalize and flatten layers that could cause issues with the signature
-      normalizeSignatureAppearances(pdfDoc);
-      console.log('Normalized signature appearances')
-      flattenForm(pdfDoc);
-      console.log('Flattened form')
-      flattenAnnotations(pdfDoc);
-      console.log('Flattened annotations')
-
-      if (certificateData) {
-        console.log('Adding certificate to PDF')
-        const certificateDoc = await PDFDocument.load(certificateData);
-
-        console.log('Got certificate doc')
-        const certificatePages = await pdfDoc.copyPages(
-          certificateDoc,
-          certificateDoc.getPageIndices(),
-        );
-
-        console.log('Copied pages')
-
-        certificatePages.forEach((page) => {
-          pdfDoc.addPage(page);
-        });
-      }
-
-      for (const field of fields) {
-        await insertFieldInPDF(pdfDoc, field);
-        console.log('Inserted field')
-      }
-
-      // Re-flatten the form to handle our checkbox and radio fields that
-      // create native arcoFields
-      flattenForm(pdfDoc);
-
-      console.log('Saving PDF')
-      const pdfBytes = await pdfDoc.save();
-
-      console.log('Signin PDF')
-      const pdfBuffer = await signPdf({ pdf: Buffer.from(pdfBytes) });
-
-      const { name, ext } = path.parse(document.title);
-
-      console.log('Uploading PDF')
-      const documentData = await putPdfFile({
-        name: `${name}_signed${ext}`,
-        type: 'application/pdf',
-        arrayBuffer: async () => Promise.resolve(pdfBuffer),
+      });
+      console.log('Got document');
+      // Seems silly but we need to do this in case the job is re-ran
+      // after it has already run through the update task further below.
+      // eslint-disable-next-line @typescript-eslint/require-await
+      const documentStatus = await io.runTask('get-document-status', async () => {
+        return document.status;
       });
 
-      console.log('uploaded pdf document')
+      console.log('Got document status');
+      // This is the same case as above.
+      // eslint-disable-next-line @typescript-eslint/require-await
+      const documentDataId = await io.runTask('get-document-data-id', async () => {
+        return document.documentDataId;
+      });
 
-      return documentData.id;
-    });
+      console.log('Got document data id');
+      const documentData = await prisma.documentData.findFirst({
+        where: {
+          id: documentDataId,
+        },
+      });
+      console.log('Got document data');
 
-    const postHog = PostHogServerClient();
+      if (!documentData) {
+        console.log('No document data');
+        throw new Error(`Document ${document.id} has no document data`);
+      }
 
-    if (postHog) {
-      postHog.capture({
-        distinctId: nanoid(),
-        event: 'App: Document Sealed',
-        properties: {
+      const recipients = await prisma.recipient.findMany({
+        where: {
+          documentId: document.id,
+          role: {
+            not: RecipientRole.CC,
+          },
+        },
+      });
+      console.log('Got recipients');
+
+      if (recipients.some((recipient) => recipient.signingStatus !== SigningStatus.SIGNED)) {
+        console.log('Some recipients not signed');
+        throw new Error(`Document ${document.id} has unsigned recipients`);
+      }
+
+      const fields = await prisma.field.findMany({
+        where: {
           documentId: document.id,
         },
+        include: {
+          Signature: true,
+        },
       });
-    }
+      console.log('Got fields');
+
+      if (fields.some((field) => !field.inserted)) {
+        console.log('Some fields not inserted');
+        throw new Error(`Document ${document.id} has unsigned fields`);
+      }
+
+      if (isResealing) {
+        // If we're resealing we want to use the initial data for the document
+        // so we aren't placing fields on top of eachother.
+        documentData.data = documentData.initialData;
+      }
+
+      const pdfData = await getFile(documentData);
+      console.log('Got pdf data');
+      const certificateData = await getCertificatePdf({ documentId }).catch(() => null);
+      console.log('Got certificate data');
+
+      const newDataId = await io.runTask('decorate-and-sign-pdf', async () => {
+        console.log('Decorating and signing PDF');
+        const pdfDoc = await PDFDocument.load(pdfData);
+        console.log('Got pdf doc');
+
+        // Normalize and flatten layers that could cause issues with the signature
+        normalizeSignatureAppearances(pdfDoc);
+        console.log('Normalized signature appearances');
+        flattenForm(pdfDoc);
+        console.log('Flattened form');
+        flattenAnnotations(pdfDoc);
+        console.log('Flattened annotations');
+
+        if (certificateData) {
+          console.log('Adding certificate to PDF');
+          const certificateDoc = await PDFDocument.load(certificateData);
+
+          console.log('Got certificate doc');
+          const certificatePages = await pdfDoc.copyPages(
+            certificateDoc,
+            certificateDoc.getPageIndices(),
+          );
+
+          console.log('Copied pages');
+
+          certificatePages.forEach((page) => {
+            pdfDoc.addPage(page);
+          });
+        }
+
+        for (const field of fields) {
+          await insertFieldInPDF(pdfDoc, field);
+          console.log('Inserted field');
+        }
+
+        // Re-flatten the form to handle our checkbox and radio fields that
+        // create native arcoFields
+        flattenForm(pdfDoc);
+
+        console.log('Saving PDF');
+        const pdfBytes = await pdfDoc.save();
+
+        console.log('Signin PDF');
+        const pdfBuffer = await signPdf({ pdf: Buffer.from(pdfBytes) });
+
+        console.log('Got pdf buffer');
+        const { name, ext } = path.parse(document.title);
+
+        console.log('Uploading PDF');
+        const documentData = await putPdfFile({
+          name: `${name}_signed${ext}`,
+          type: 'application/pdf',
+          arrayBuffer: async () => Promise.resolve(pdfBuffer),
+        });
+
+        console.log('uploaded pdf document');
+
+        return documentData.id;
+      });
+
+      const postHog = PostHogServerClient();
+
+      if (postHog) {
+        postHog.capture({
+          distinctId: nanoid(),
+          event: 'App: Document Sealed',
+          properties: {
+            documentId: document.id,
+          },
+        });
+      }
 
       await io.runTask('update-document', async () => {
-      console.log('Updating document')
-      await prisma.$transaction(async (tx) => {
-        const newData = await tx.documentData.findFirstOrThrow({
-          where: {
-            id: newDataId,
-          },
-        });
-
-        await tx.document.update({
-          where: {
-            id: document.id,
-          },
-          data: {
-            status: DocumentStatus.COMPLETED,
-            completedAt: new Date(),
-          },
-        });
-
-        await tx.documentData.update({
-          where: {
-            id: documentData.id,
-          },
-          data: {
-            data: newData.data,
-          },
-        });
-
-        await tx.documentAuditLog.create({
-          data: createDocumentAuditLogData({
-            type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED,
-            documentId: document.id,
-            requestMetadata,
-            user: null,
-            data: {
-              transactionId: nanoid(),
+        console.log('Updating document');
+        await prisma.$transaction(async (tx) => {
+          const newData = await tx.documentData.findFirstOrThrow({
+            where: {
+              id: newDataId,
             },
-          }),
+          });
+
+          await tx.document.update({
+            where: {
+              id: document.id,
+            },
+            data: {
+              status: DocumentStatus.COMPLETED,
+              completedAt: new Date(),
+            },
+          });
+
+          await tx.documentData.update({
+            where: {
+              id: documentData.id,
+            },
+            data: {
+              data: newData.data,
+            },
+          });
+
+          await tx.documentAuditLog.create({
+            data: createDocumentAuditLogData({
+              type: DOCUMENT_AUDIT_LOG_TYPE.DOCUMENT_COMPLETED,
+              documentId: document.id,
+              requestMetadata,
+              user: null,
+              data: {
+                transactionId: nanoid(),
+              },
+            }),
+          });
         });
       });
-    });
 
       await io.runTask('send-completed-email', async () => {
-      console.log('Sending completed email')
-      let shouldSendCompletedEmail = sendEmail && !isResealing;
+        console.log('Sending completed email');
+        let shouldSendCompletedEmail = sendEmail && !isResealing;
 
-      if (isResealing && documentStatus !== DocumentStatus.COMPLETED) {
-        shouldSendCompletedEmail = sendEmail;
-      }
+        if (isResealing && documentStatus !== DocumentStatus.COMPLETED) {
+          shouldSendCompletedEmail = sendEmail;
+        }
 
-      if (shouldSendCompletedEmail) {
-        await sendCompletedEmail({ documentId, requestMetadata });
-      }
-    });
+        if (shouldSendCompletedEmail) {
+          await sendCompletedEmail({ documentId, requestMetadata });
+        }
+      });
 
-    const updatedDocument = await prisma.document.findFirstOrThrow({
-      where: {
-        id: document.id,
-      },
-      include: {
-        documentData: true,
-        Recipient: true,
-      },
-    });
+      const updatedDocument = await prisma.document.findFirstOrThrow({
+        where: {
+          id: document.id,
+        },
+        include: {
+          documentData: true,
+          Recipient: true,
+        },
+      });
 
-    await triggerWebhook({
-      event: WebhookTriggerEvents.DOCUMENT_COMPLETED,
-      data: updatedDocument,
-      userId: updatedDocument.userId,
-      teamId: updatedDocument.teamId ?? undefined,
-    });
+      await triggerWebhook({
+        event: WebhookTriggerEvents.DOCUMENT_COMPLETED,
+        data: updatedDocument,
+        userId: updatedDocument.userId,
+        teamId: updatedDocument.teamId ?? undefined,
+      });
     } catch (err) {
       console.error(err);
       throw err;
     }
-      
   },
 } as const satisfies JobDefinition<
   typeof SEAL_DOCUMENT_JOB_DEFINITION_ID,
