@@ -43,10 +43,10 @@ export const DocumentInviteEmailTemplate = ({
   const action = RECIPIENT_ROLES_DESCRIPTION[role].actionVerb.toLowerCase();
 
   const previewText = selfSigner
-    ? `Please ${action} your document ${documentName}`
+    ? `Por favor ${action} tu documento ${documentName}`
     : isTeamInvite
-    ? `${inviterName} on behalf of ${teamName} has invited you to ${action} ${documentName}`
-    : `${inviterName} has invited you to ${action} ${documentName}`;
+    ? `${inviterName} en representación de ${teamName} te invitó a ${action} ${documentName}`
+    : `${inviterName} te invitó a ${action} ${documentName}`;
 
   const getAssetUrl = (path: string) => {
     return new URL(path, assetBaseUrl).toString();
