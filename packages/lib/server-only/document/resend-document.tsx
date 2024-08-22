@@ -104,7 +104,7 @@ export const resendDocument = async ({
       let emailSubject = `Recordatorio: Por favor ${recipientActionVerb} este documento`;
 
       if (selfSigner) {
-        emailMessage = `You have initiated the document ${`"${document.title}"`} that requires you to ${recipientActionVerb} it.`;
+        emailMessage = `Has iniciado el document ${`"${document.title}"`} que require que lo ${recipientActionVerb}`;
         emailSubject = `Recordatorio: Por favor ${recipientActionVerb} tu documento`;
       }
 
