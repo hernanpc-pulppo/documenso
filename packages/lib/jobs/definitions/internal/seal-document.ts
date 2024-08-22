@@ -48,7 +48,7 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
     try {
 
     const { documentId, sendEmail = true, isResealing = false, requestMetadata } = payload;
-
+      console.log('Running job')
     const document = await prisma.document.findFirstOrThrow({
       where: {
         id: documentId,
@@ -62,7 +62,7 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
         Recipient: true,
       },
     });
-
+    console.log('Got document')
     // Seems silly but we need to do this in case the job is re-ran
     // after it has already run through the update task further below.
     // eslint-disable-next-line @typescript-eslint/require-await
@@ -70,19 +70,23 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
       return document.status;
     });
 
+      console.log('Got document status')
     // This is the same case as above.
     // eslint-disable-next-line @typescript-eslint/require-await
     const documentDataId = await io.runTask('get-document-data-id', async () => {
       return document.documentDataId;
     });
 
+      console.log('Got document data id')
     const documentData = await prisma.documentData.findFirst({
       where: {
         id: documentDataId,
       },
     });
+      console.log('Got document data')
 
     if (!documentData) {
+      console.log('No document data')
       throw new Error(`Document ${document.id} has no document data`);
     }
 
@@ -94,8 +98,10 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
         },
       },
     });
+      console.log('Got recipients')
 
     if (recipients.some((recipient) => recipient.signingStatus !== SigningStatus.SIGNED)) {
+      console.log('Some recipients not signed')
       throw new Error(`Document ${document.id} has unsigned recipients`);
     }
 
@@ -107,8 +113,10 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
         Signature: true,
       },
     });
+      console.log('Got fields')
 
     if (fields.some((field) => !field.inserted)) {
+      console.log('Some fields not inserted')
       throw new Error(`Document ${document.id} has unsigned fields`);
     }
 
@@ -118,24 +126,35 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
       documentData.data = documentData.initialData;
     }
 
-    const pdfData = await getFile(documentData);
+      const pdfData = await getFile(documentData);
+      console.log('Got pdf data')
     const certificateData = await getCertificatePdf({ documentId }).catch(() => null);
+      console.log('Got certificate data')
 
     const newDataId = await io.runTask('decorate-and-sign-pdf', async () => {
+      console.log('Decorating and signing PDF')
       const pdfDoc = await PDFDocument.load(pdfData);
+      console.log('Got pdf doc')
 
       // Normalize and flatten layers that could cause issues with the signature
       normalizeSignatureAppearances(pdfDoc);
+      console.log('Normalized signature appearances')
       flattenForm(pdfDoc);
+      console.log('Flattened form')
       flattenAnnotations(pdfDoc);
+      console.log('Flattened annotations')
 
       if (certificateData) {
+        console.log('Adding certificate to PDF')
         const certificateDoc = await PDFDocument.load(certificateData);
 
+        console.log('Got certificate doc')
         const certificatePages = await pdfDoc.copyPages(
           certificateDoc,
           certificateDoc.getPageIndices(),
         );
+
+        console.log('Copied pages')
 
         certificatePages.forEach((page) => {
           pdfDoc.addPage(page);
@@ -144,22 +163,29 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
 
       for (const field of fields) {
         await insertFieldInPDF(pdfDoc, field);
+        console.log('Inserted field')
       }
 
       // Re-flatten the form to handle our checkbox and radio fields that
       // create native arcoFields
       flattenForm(pdfDoc);
 
+      console.log('Saving PDF')
       const pdfBytes = await pdfDoc.save();
+
+      console.log('Signin PDF')
       const pdfBuffer = await signPdf({ pdf: Buffer.from(pdfBytes) });
 
       const { name, ext } = path.parse(document.title);
 
+      console.log('Uploading PDF')
       const documentData = await putPdfFile({
         name: `${name}_signed${ext}`,
         type: 'application/pdf',
         arrayBuffer: async () => Promise.resolve(pdfBuffer),
       });
+
+      console.log('uploaded pdf document')
 
       return documentData.id;
     });
@@ -176,7 +202,8 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
       });
     }
 
-    await io.runTask('update-document', async () => {
+      await io.runTask('update-document', async () => {
+      console.log('Updating document')
       await prisma.$transaction(async (tx) => {
         const newData = await tx.documentData.findFirstOrThrow({
           where: {
@@ -217,7 +244,8 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
       });
     });
 
-    await io.runTask('send-completed-email', async () => {
+      await io.runTask('send-completed-email', async () => {
+      console.log('Sending completed email')
       let shouldSendCompletedEmail = sendEmail && !isResealing;
 
       if (isResealing && documentStatus !== DocumentStatus.COMPLETED) {
