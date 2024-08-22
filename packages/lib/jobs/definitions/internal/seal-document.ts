@@ -45,6 +45,8 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
     schema: SEAL_DOCUMENT_JOB_DEFINITION_SCHEMA,
   },
   handler: async ({ payload, io }) => {
+    try {
+
     const { documentId, sendEmail = true, isResealing = false, requestMetadata } = payload;
 
     const document = await prisma.document.findFirstOrThrow({
@@ -243,6 +245,11 @@ export const SEAL_DOCUMENT_JOB_DEFINITION = {
       userId: updatedDocument.userId,
       teamId: updatedDocument.teamId ?? undefined,
     });
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+      
   },
 } as const satisfies JobDefinition<
   typeof SEAL_DOCUMENT_JOB_DEFINITION_ID,
