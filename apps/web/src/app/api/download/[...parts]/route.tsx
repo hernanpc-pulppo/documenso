@@ -15,7 +15,7 @@ export async function GET(request: Request, { params }: { params: { parts: strin
     headers: {
       'Content-Type': 'application/pdf',
       'Content-disposition': 'inline',
-      'Content-Length': file.length,
+      'Content-Length': `${file.length}`,
       'Access-Control-Allow-Origin': '*',
       'Access-Control-Allow-Methods': 'GET, POST, PUT, DELETE, OPTIONS',
       'Access-Control-Allow-Headers': '*',
