@@ -29,33 +29,36 @@ export const signWithLocalCert = async ({ pdf }: SignWithLocalCertOptions) => {
 
   let cert: Buffer | null = null;
 
-  if (process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS) {
-    console.log('Using local cert');
-    cert = Buffer.from(process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS, 'base64');
+  try {
+    if (process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS) {
+      console.log('Using local cert');
+      cert = Buffer.from(process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_CONTENTS, 'base64');
+    }
+
+    if (!cert) {
+      console.log('Using default cert');
+      cert = Buffer.from(
+        fs.readFileSync(process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH || './example/cert.p12'),
+      );
+    }
+    const signature = await signWithP12({
+      cert,
+      content: pdfWithoutSignature,
+      password: process.env.NEXT_PRIVATE_SIGNING_PASSPHRASE || undefined,
+    });
+    console.log('Signed with p12');
+
+    const signatureAsHex = signature.toString('hex');
+
+    const signedPdf = Buffer.concat([
+      pdfWithPlaceholder.subarray(0, byteRange[1]),
+      Buffer.from(`<${signatureAsHex.padEnd(signatureLength - 2, '0')}>`),
+      pdfWithPlaceholder.subarray(byteRange[2]),
+    ]);
+
+    return signedPdf;
+  } catch (err) {
+    console.error(`Hubo un error:  ${err}`);
+    throw err;
   }
-
-  if (!cert) {
-    console.log('Using default cert');
-    cert = Buffer.from(
-      fs.readFileSync(process.env.NEXT_PRIVATE_SIGNING_LOCAL_FILE_PATH || './example/cert.p12'),
-    );
-  }
-
-  const signature = signWithP12({
-    cert,
-    content: pdfWithoutSignature,
-    password: process.env.NEXT_PRIVATE_SIGNING_PASSPHRASE || undefined,
-  });
-
-  console.log('Signed with p12');
-
-  const signatureAsHex = signature.toString('hex');
-
-  const signedPdf = Buffer.concat([
-    pdfWithPlaceholder.subarray(0, byteRange[1]),
-    Buffer.from(`<${signatureAsHex.padEnd(signatureLength - 2, '0')}>`),
-    pdfWithPlaceholder.subarray(byteRange[2]),
-  ]);
-
-  return signedPdf;
 };
