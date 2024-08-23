@@ -42,7 +42,7 @@ export const TemplateDocumentInvite = ({
             </>
           ) : isTeamInvite ? (
             <>
-              {`${inviterName} en representación de ${teamName} te ha invitado a${actionVerb.toLowerCase()}`}
+              {`${teamName} te ha invitado a ${actionVerb.toLowerCase()}`}
               <br />
               {`"${documentName}"`}
             </>
@@ -56,7 +56,7 @@ export const TemplateDocumentInvite = ({
         </Text>
 
         <Text className="my-1 text-center text-base text-slate-400">
-         Continuar {progressiveVerb.toLowerCase()} el documento.
+          Continuar {progressiveVerb.toLowerCase()} el documento.
         </Text>
 
         <Section className="mb-6 mt-8 text-center">

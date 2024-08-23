@@ -110,7 +110,7 @@ export const resendDocument = async ({
 
       if (isTeamDocument && document.team) {
         emailSubject = `Recordatorio: ${document.team.name} te ha invitado a ${recipientActionVerb} un documento`;
-        emailMessage = `${user.name} en representación de ${document.team.name} te ha invitado a ${recipientActionVerb} el documento "${document.title}".`;
+        emailMessage = `${document.team.name} te ha invitado a ${recipientActionVerb} el documento "${document.title}".`;
       }
 
       const customEmailTemplate = {

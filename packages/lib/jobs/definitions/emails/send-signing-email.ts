@@ -105,7 +105,7 @@ export const SEND_SIGNING_EMAIL_JOB_DEFINITION = {
 
     if (isTeamDocument && team) {
       emailSubject = `${team.name} te ha invitado a ${recipientActionVerb} un documento`;
-      emailMessage = `${user.name} en representación de ${team.name} te ha invitado a ${recipientActionVerb} el documento "${document.title}".`;
+      emailMessage = `${team.name} te ha invitado a ${recipientActionVerb} el documento "${document.title}".`;
     }
 
     const customEmailTemplate = {

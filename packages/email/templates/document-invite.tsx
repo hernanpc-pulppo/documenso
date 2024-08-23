@@ -45,7 +45,7 @@ export const DocumentInviteEmailTemplate = ({
   const previewText = selfSigner
     ? `Por favor ${action} tu documento ${documentName}`
     : isTeamInvite
-    ? `${inviterName} en representación de ${teamName} te invitó a ${action} ${documentName}`
+    ? `${teamName} te invitó a ${action} ${documentName}`
     : `${inviterName} te invitó a ${action} ${documentName}`;
 
   const getAssetUrl = (path: string) => {
@@ -69,11 +69,7 @@ export const DocumentInviteEmailTemplate = ({
           <Section>
             <Container className="mx-auto mb-2 mt-8 max-w-xl rounded-lg border border-solid border-slate-200 p-4 backdrop-blur-sm">
               <Section>
-                <Img
-                  src={getAssetUrl('/static/logo.png')}
-                  alt="Pulppo Logo"
-                  className="mb-4 h-6"
-                />
+                <Img src={getAssetUrl('/static/logo.png')} alt="Pulppo Logo" className="mb-4 h-6" />
 
                 <TemplateDocumentInvite
                   inviterName={inviterName}
