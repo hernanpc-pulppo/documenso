@@ -9,7 +9,6 @@ import {
   Hr,
   Html,
   Img,
-  Link,
   Preview,
   Section,
   Tailwind,
@@ -87,13 +86,6 @@ export const DocumentInviteEmailTemplate = ({
 
             <Container className="mx-auto mt-12 max-w-xl">
               <Section>
-                <Text className="my-4 text-base font-semibold">
-                  {inviterName}{' '}
-                  <Link className="font-normal text-slate-400" href="mailto:{inviterEmail}">
-                    ({inviterEmail})
-                  </Link>
-                </Text>
-
                 <Text className="mt-2 text-base text-slate-400">
                   {customBody ? (
                     <pre className="font-sans text-base text-slate-400">{customBody}</pre>
