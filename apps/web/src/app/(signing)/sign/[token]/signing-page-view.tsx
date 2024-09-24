@@ -55,16 +55,12 @@ export const SigningPageView = ({
       </h1>
 
       <div className="mt-2.5 flex items-center gap-x-6">
-        <p
-          className="text-muted-foreground truncate"
-          title={document.User.name ? document.User.name : ''}
-        >
-          {document.User.name}
+        <p className="text-muted-foreground truncate" title={'Pulppo'}>
+          Pulppo
         </p>
       </div>
       <p className="text-muted-foreground">
-        ({document.User.email}) te ha invitado a{' '}
-        {recipient.role === RecipientRole.VIEWER && 'ver'}
+        (legal@pulppo.com) te ha invitado a {recipient.role === RecipientRole.VIEWER && 'ver'}
         {recipient.role === RecipientRole.SIGNER && 'firmar'}
         {recipient.role === RecipientRole.APPROVER && 'aprobar'} este documento.
       </p>
