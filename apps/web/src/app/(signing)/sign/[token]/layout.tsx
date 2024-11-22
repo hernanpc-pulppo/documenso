@@ -11,6 +11,13 @@ export type SigningLayoutProps = {
   children: React.ReactNode;
 };
 
+export const metadata = {
+  robots: {
+    index: false,
+    follow: false,
+  },
+};
+
 export default async function SigningLayout({ children }: SigningLayoutProps) {
   const { user, session } = await getServerComponentSession();
 
